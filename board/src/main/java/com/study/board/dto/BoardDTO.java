@@ -2,16 +2,17 @@ package com.study.board.dto;
 
 import com.study.board.entity.Board;
 import com.study.board.entity.User;
-import lombok.*;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 public class BoardDTO {
 
-    /** 게시글의 등록과 수정을 처리할 요청(Request) 클래스 */
+    /**
+     * 게시글의 등록과 수정을 처리할 요청(Request) 클래스
+     */
     @Data
     @AllArgsConstructor
     @NoArgsConstructor

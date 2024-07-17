@@ -9,8 +9,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class BoardService {
@@ -24,7 +22,7 @@ public class BoardService {
     }
 
     @Transactional(readOnly = true)
-    public BoardDTO.Response findById(int id){
+    public BoardDTO.Response findById(int id) {
         return convertToDto(boardRepository.findById(id));
     }
 

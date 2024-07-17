@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Builder
@@ -28,7 +26,6 @@ public class Board extends TimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-
 
 
 //    @OneToMany(mappedBy = "boards",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table
 @Entity
-public class Comment extends TimeEntity{
+public class Comment extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

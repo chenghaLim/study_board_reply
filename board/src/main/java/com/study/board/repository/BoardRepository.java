@@ -1,6 +1,5 @@
 package com.study.board.repository;
 
-import com.study.board.dto.BoardDTO;
 import com.study.board.entity.Board;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

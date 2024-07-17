@@ -24,7 +24,7 @@
             </div>
             <div class="card-body">
                 <label for="title">제목</label>
-                <h5 class="card-title" id="title" th:tel="${boardDTO.title}"></h5>
+                <h5 class="card-title" id="title" th:text="${boardDTO.title}"></h5>
                 <br/>
                 <label for="content">내용</label>
                 <p class="card-text" id="content" th:text="${boardDTO.content}">

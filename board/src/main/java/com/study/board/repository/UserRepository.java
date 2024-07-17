@@ -1,15 +1,25 @@
 package com.study.board.repository;
 
-import com.study.board.entity.Board;
 import com.study.board.entity.User;
+import com.study.board.security.redis.CacheNames;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
 
 @Repository
-public interface UserRepository extends JpaRepository<User,Integer> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
-  Optional<User> findByEmail(String email);
+    boolean existsByEmail(String email);
 
+    // 스프링의 캐시 추상화
+    @Cacheable(cacheNames = CacheNames.USERBYEMAIL, key = "'login'+#p0", unless = "#result==null")
+    Optional<User> findByEmail(String email);
+
+    Optional<User> findByName(String name);
+
+    boolean existsByName(String name);
+
+    Optional<User> findById(int id);
 }

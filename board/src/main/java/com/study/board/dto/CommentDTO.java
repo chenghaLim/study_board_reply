@@ -5,9 +5,6 @@ import com.study.board.entity.Comment;
 import com.study.board.entity.User;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 public class CommentDTO {
     @Data
     @AllArgsConstructor
@@ -34,7 +31,7 @@ public class CommentDTO {
 
     @RequiredArgsConstructor
     @Getter
-    public static class Response{
+    public static class Response {
         private int id;
         private String comment;
         private String createdAt, updateAt;

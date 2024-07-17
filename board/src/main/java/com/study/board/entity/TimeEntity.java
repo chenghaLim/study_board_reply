@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 abstract class TimeEntity {
 
     @CreatedDate
-    @Column(name ="created_at", nullable = false)
+    @Column(name = "created_at", nullable = false)
     private String createdAt;
 
     @LastModifiedDate
@@ -24,14 +24,14 @@ abstract class TimeEntity {
 
     /* 해당 엔티티를 저장하기 이전에 실행 */
     @PrePersist
-    public void onPrePersist(){
+    public void onPrePersist() {
         this.createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd"));
         this.updatedAt = this.createdAt;
     }
 
     /* 해당 엔티티를 업데이트 하기 이전에 실행*/
     @PreUpdate
-    public void onPreUpdate(){
+    public void onPreUpdate() {
         this.updatedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy.MM.dd HH:mm"));
     }
 
