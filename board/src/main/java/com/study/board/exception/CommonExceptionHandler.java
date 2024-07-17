@@ -18,13 +18,16 @@ public class CommonExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
+
     @ExceptionHandler(UnauthorizedException.class)
     public HttpEntity<?> handleUnauthorizedException(UnauthorizedException e) {
+        HttpStatus status = e.isForbidden() ? HttpStatus.FORBIDDEN : HttpStatus.UNAUTHORIZED;
         return new ResponseEntity<>(
                 ResDTO.builder()
                         .code(-2)
                         .message(e.getMessage())
                         .build(),
-                HttpStatus.UNAUTHORIZED);
+                status);
     }
+
 }

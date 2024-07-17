@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
 
-    @Query("SELECT b FROM Board b INNER JOIN b.user ORDER BY b.id DESC")
+    @Query("SELECT b FROM Board b JOIN FETCH b.user ORDER BY b.id DESC")
     Page<Board> findAll(Pageable pageable);
 
     Board findById(int id);

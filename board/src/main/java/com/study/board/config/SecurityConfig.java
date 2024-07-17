@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,7 +24,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @EnableWebSecurity
 @RequiredArgsConstructor
 @EnableMethodSecurity
-@EnableScheduling
 public class SecurityConfig implements WebMvcConfigurer {
 
     @Bean
@@ -47,8 +47,20 @@ public class SecurityConfig implements WebMvcConfigurer {
         httpSecurity.authorizeHttpRequests(config -> config
                 .requestMatchers("/api/v1/auth/signUp", "/api/v1/auth/signIn").permitAll()
                 .requestMatchers("/static/css/app.css", "static/app.js", "/users/**", "/", "/boards", "assert.html", "detail.html", "/boards/showOne/*").permitAll()
-                .requestMatchers("/api/v1/auth/logout").hasAnyRole("ADMIN", "USER")
+                .requestMatchers("error.html").permitAll()
                 .anyRequest().authenticated());
+
+        // 401 Error 처리, Authorization 즉, 인증과정에서 실패할 시 처리
+        // 403 Error 처리, 인증과는 별개로 추가적인 권한이 충족되지 않는 경우
+        httpSecurity.exceptionHandling(exceptionHandling ->
+                exceptionHandling
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            response.sendRedirect("/");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            response.sendRedirect("/");
+                        }));
+
         return httpSecurity.getOrBuild();
     }
 
@@ -56,12 +68,5 @@ public class SecurityConfig implements WebMvcConfigurer {
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         // 암호화 방식을 BCrypt로 지정
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        // h2-console 사용 및 resources 접근 허용 설정
-        return (web) -> web.ignoring()
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations());
     }
 }

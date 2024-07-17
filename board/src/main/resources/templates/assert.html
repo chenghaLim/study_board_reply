@@ -15,44 +15,22 @@
                 </div>
                 <div th:unless="${user == null}">
                     <h3>[[${user.getName()}]]님 환영합니다!</h3>
-                    <a class="btn btn-primary" th:href="@{/boards/new}" role="button">글 작성</a>
-                    <a class="btn btn-danger" id="logoutButton" role="button">로그아웃</a>
+                    <a class="btn btn-primary" id="new" th:href="@{/boards/new}" role="button">글 작성</a>
+                    <a class="btn btn-danger" id="logout"  role="button">로그아웃</a>
                 </div>
             </td>
         </tr>
     </table>
+<script>
+    document.querySelector('#logout').addEventListener("click",()=>{
+        // ACCESS-TOKEN 쿠키를 삭제합니다.
+        document.cookie = 'ACCESS-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        // REFRESH-TOKEN 쿠키를 삭제합니다.
+        document.cookie = 'REFRESH-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+        window.location.href = "/";
+    })
+</script>
 </div>
 </body>
-<script>
-    document.addEventListener('DOMContentLoaded', (event) => {
-        const logoutButton = document.getElementById('logoutButton');
-
-        logoutButton.addEventListener('click', async () => {
-            try {
-                const response = await fetch('/logout', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include'
-                });
-
-                if (response.ok) {
-                    const result = await response.json();
-                    if (result.code === 0) {
-                        alert(result.message);
-                        window.location.href = "/";
-                    } else {
-                        alert('로그아웃 실패: ' + result.message);
-                    }
-                } else {
-                    alert('로그아웃 요청 실패');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('로그아웃 중 오류가 발생했습니다.');
-            }
-        });
-    });
-</script>
 </html>

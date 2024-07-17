@@ -33,18 +33,13 @@ spring:
   jwt:
     secret: e2aeedff8aa5902e2e5a7f40ec6343f2c3d168359ed4b10420a3a5b72296836c
 
-  cache:
-    cache-names: "cache1,cache2"
-    caffeine:
-      spec: "maximumSize=500, expireAfterAccess=600s"
-
-  data:
-    redis:
-      host: localhost
-      port: 8090
-      timeout: 6
-
 logging:
   level:
-    root: debug
+    org.hibernate.SQL: debug
+    org.springframework: INFO
+    org.springframework.web: DEBUG
+
+    jpa:
+      hibernate:
+        show_sql: false
 

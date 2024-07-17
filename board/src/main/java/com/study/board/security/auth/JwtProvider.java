@@ -2,18 +2,23 @@ package com.study.board.security.auth;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.auth0.jwt.interfaces.JWTVerifier;
 import com.study.board.entity.User;
 import com.study.board.exception.UnauthorizedException;
-import io.jsonwebtoken.Claims;
-import jakarta.servlet.http.HttpServletRequest;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 @Component
+@RequiredArgsConstructor
+@Getter
 public class JwtProvider {
 
     // 엑세스 토큰 유효기간 1일 설정
@@ -24,6 +29,8 @@ public class JwtProvider {
     public static final String TOKEN_PREFIX = "Bearer ";
     // 토큰이 담길 헤더
     public static final String HEADER = "Authorization";
+
+    private static final String url = "https://localhost:8080";
 
     private String SECRET = "24fb2557fad0be76049e6677c3d7fcdb5ebe3cc4483f86751cfd7d4478a6ce6e";
 
@@ -38,6 +45,28 @@ public class JwtProvider {
                 .withClaim("role", user.getRole().getValue())
                 .withClaim("token-type",tokenType.name())
                 .sign(Algorithm.HMAC512(SECRET));
+    }
+
+    public Map<String, Object> getClaims(String token) {
+        try {
+            // JWT 검증기를 설정합니다.
+            JWTVerifier verifier = JWT.require(Algorithm.HMAC512(SECRET)).build();
+
+            // 토큰을 검증하고 디코딩합니다.
+            DecodedJWT decodedJWT = verifier.verify(token);
+
+            // Claims를 추출합니다.
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("subject", decodedJWT.getSubject());
+            claims.put("expiresAt", decodedJWT.getExpiresAt());
+            claims.put("role", decodedJWT.getClaim("role").asString());
+            claims.put("token-type", decodedJWT.getClaim("token-type").asString());
+
+            return claims;
+        } catch (JWTVerificationException exception) {
+            // 토큰이 유효하지 않거나 검증에 실패한 경우 예외를 처리합니다.
+            throw new RuntimeException("Invalid JWT token", exception);
+        }
     }
 
     // 토큰 검증 함수
@@ -58,20 +87,5 @@ public class JwtProvider {
     }
 
 
-    public Long getExpiration(String jwt) throws UnauthorizedException {
-        try {
-            DecodedJWT decodedJWT = verify(jwt);
-            return decodedJWT.getExpiresAt().getTime() - System.currentTimeMillis();
-        } catch (Exception e) {
-            throw new UnauthorizedException("토큰 만료 시간 조회 중 오류가 발생했습니다. " + e.getMessage());
-        }
-    }
 
-    public String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(TOKEN_PREFIX)) {
-            return bearerToken.substring(7);
-        }
-        return null;
-    }
 }
