@@ -48,7 +48,7 @@ public class SecurityConfig{
         // 인증, 권한 필터 설정
         httpSecurity.authorizeHttpRequests(config -> config
                 .requestMatchers("/favicon.ico", "classpath:/static/**", "classpath:/templates/**").permitAll()
-                .requestMatchers("/", "/boards").permitAll()
+                .requestMatchers("/", "/boards","/boards/showOne/*").permitAll()
                 .requestMatchers("/users/sign*", "/api/v1/auth/sign*").permitAll()
                 .requestMatchers("/boards/new").authenticated()
                 .anyRequest().authenticated());

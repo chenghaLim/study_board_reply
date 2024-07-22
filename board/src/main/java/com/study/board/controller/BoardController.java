@@ -11,7 +11,6 @@ import com.study.board.security.auth.JwtProvider;
 import com.study.board.service.BoardService;
 import com.study.board.service.CustomUserByIdService;
 import com.study.board.service.UserService;
-import io.lettuce.core.ScriptOutputType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

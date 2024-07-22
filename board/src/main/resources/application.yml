@@ -8,10 +8,12 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
+        show_sql: true
+        default_batch_fetch_size: 1000
 
 
   security:
@@ -37,17 +39,13 @@ spring:
   mvc:
     static-path-pattern: /static/**
 
-
-
 logging:
   level:
     org.hibernate.SQL: debug
+    org.hibernate.tool.hbm2ddl: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.hibernate.type.descriptor.sql.BasicExtractor: TRACE
     org.springframework: INFO # 로그인, 상태변경 같은 정보성 메세지
     org.springframework.web: DEBUG
-
-    jpa:
-      hibernate:
-        show_sql: false
-
 
 

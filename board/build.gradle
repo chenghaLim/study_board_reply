@@ -46,9 +46,6 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
 	implementation 'org.springframework.boot:spring-boot-starter-cache'// 스프링 application 내부 캐시
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis'// redis
-	implementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'
-
 }
 
 tasks.named('test') {
