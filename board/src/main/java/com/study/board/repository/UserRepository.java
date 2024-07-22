@@ -1,7 +1,9 @@
 package com.study.board.repository;
 
 import com.study.board.entity.User;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -19,4 +21,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     boolean existsByName(String name);
 
     Optional<User> findById(int id);
+
+    @Query("SELECT u FROM User u JOIN FETCH u.role WHERE u.id = :id")
+    Optional<User> findByIdWithRoles(@Param("id") Long id);
 }

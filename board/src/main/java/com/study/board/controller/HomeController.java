@@ -12,17 +12,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.server.ResponseStatusException;
 
 // 화면 보이는 Controller
 @Controller
 @RequiredArgsConstructor
-public class HomController {
+public class HomeController {
 
     private final BoardService boardService;
     private final UserService userService;
@@ -79,9 +81,8 @@ public class HomController {
     }
 
     @GetMapping("/boards/new")
-    public String showWrite(Model model, @CookieValue(name = "ACCESS-TOKEN", required = false) String token) {
-        model.addAttribute("boardDTO", new BoardDTO.Request());
-        getUser(token, model);
+    public String showWrite(){
         return "boards/new";
     }
+
 }

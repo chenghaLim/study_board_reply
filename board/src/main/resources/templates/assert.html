@@ -15,22 +15,59 @@
                 </div>
                 <div th:unless="${user == null}">
                     <h3>[[${user.getName()}]]님 환영합니다!</h3>
-                    <a class="btn btn-primary" id="new" th:href="@{/boards/new}" role="button">글 작성</a>
-                    <a class="btn btn-danger" id="logout"  role="button">로그아웃</a>
+                    <a class="btn btn-primary" id="new" role="button">글작성</a>
+                    <a class="btn btn-danger" id="logout" role="button">로그아웃</a>
                 </div>
             </td>
         </tr>
     </table>
-<script>
-    document.querySelector('#logout').addEventListener("click",()=>{
-        // ACCESS-TOKEN 쿠키를 삭제합니다.
-        document.cookie = 'ACCESS-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        // REFRESH-TOKEN 쿠키를 삭제합니다.
-        document.cookie = 'REFRESH-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelector('#logout').addEventListener("click", () => {
+                // ACCESS-TOKEN 쿠키를 삭제합니다.
+                document.cookie = 'ACCESS-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+                // REFRESH-TOKEN 쿠키를 삭제합니다.
+                document.cookie = 'REFRESH-TOKEN=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
 
-        window.location.href = "/";
-    })
-</script>
+                window.location.href = "/";
+            });
+
+            document.querySelector("#new").addEventListener("click", (event) => {
+                event.preventDefault();
+
+                // 서버로 요청을 보냅니다.
+                fetch("/api/boards/new", {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': 'Bearer ' + getCookie('ACCESS-TOKEN')
+                    }
+                })
+                    .then(response => {
+                        // 응답 상태를 확인합니다.
+                        if (response.ok) {
+                            window.location.href = '/boards/new';
+                        } else if (response.status === 401) {
+                            // 인증되지 않은 요청인 경우
+                            return response.json().then(err => {
+                                throw new Error(err.message);
+                            });
+                        } else {
+                            // 다른 오류 상태
+                            return response.json().then(err => {
+                                throw new Error(err.message);
+                            });
+                        }
+                    })
+            });
+
+// 쿠키 값을 가져오는 함수
+            function getCookie(name) {
+                let value = "; " + document.cookie;
+                let parts = value.split("; " + name + "=");
+                if (parts.length === 2) return parts.pop().split(";").shift();
+            }
+        })
+    </script>
 </div>
 </body>
 </html>

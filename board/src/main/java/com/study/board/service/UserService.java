@@ -5,6 +5,7 @@ import com.study.board.entity.User;
 import com.study.board.exception.BadRequestException;
 import com.study.board.exception.ResDTO;
 import com.study.board.repository.UserRepository;
+import com.study.board.security.CustomUserDetails;
 import com.study.board.security.auth.JwtProvider;
 import com.study.board.security.auth.JwtToken;
 import com.study.board.security.auth.JwtTokenType;
@@ -86,7 +87,6 @@ public class UserService {
                 HttpStatus.OK);
     }
 
-
     /* Entity -> dto */
     private UserDTO.Response convertToDto(User user) {
         UserDTO.Response userDTO = new UserDTO.Response();
@@ -94,7 +94,7 @@ public class UserService {
         userDTO.setEmail(user.getEmail());
         userDTO.setName(user.getName());
         userDTO.setRole(user.getRole());
-        userDTO.setUpdatedAt(user.getUpdatedAt());
+//        userDTO.setUpdatedAt(user.getUpdatedAt());
         return userDTO;
     }
 }

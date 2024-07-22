@@ -9,6 +9,7 @@ import com.study.board.entity.User;
 import com.study.board.exception.UnauthorizedException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -19,6 +20,7 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 @Getter
+@Slf4j
 public class JwtProvider {
 
     // 엑세스 토큰 유효기간 1일 설정
@@ -78,6 +80,7 @@ public class JwtProvider {
                     .build().verify(jwt);
         } catch (Exception e) {
             // 검증 실패 시 예외 발생
+            log.info("exception: {}",e.getMessage());
             throw new UnauthorizedException("token 값이 잘못되었습니다. " + e.getMessage());
         }
     }

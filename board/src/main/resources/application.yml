@@ -33,13 +33,21 @@ spring:
   jwt:
     secret: e2aeedff8aa5902e2e5a7f40ec6343f2c3d168359ed4b10420a3a5b72296836c
 
+
+  mvc:
+    static-path-pattern: /static/**
+
+
+
 logging:
   level:
     org.hibernate.SQL: debug
-    org.springframework: INFO
+    org.springframework: INFO # 로그인, 상태변경 같은 정보성 메세지
     org.springframework.web: DEBUG
 
     jpa:
       hibernate:
         show_sql: false
+
+
 

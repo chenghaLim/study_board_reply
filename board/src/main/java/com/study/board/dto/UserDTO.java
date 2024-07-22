@@ -10,6 +10,7 @@ import lombok.*;
 import java.io.Serializable;
 
 public class UserDTO {
+
     /**
      * 회원 Service 요청(Request) DTO 클래스
      */
@@ -66,13 +67,23 @@ public class UserDTO {
 
     @Getter
     @Setter
+    @NoArgsConstructor
     public static class Response implements Serializable {
 
         private int id;
         private String email;
+        private String password;
         private String name;
         private Role role;
-        private String updatedAt;
+
+        public Response(int id, String email, String password, String name, Role role) {
+            this.id = id;
+            this.email = email;
+            this.password = password;
+            this.name = name;
+            this.role = role;
+        }
+//        private String updatedAt;
 
     }
 }
