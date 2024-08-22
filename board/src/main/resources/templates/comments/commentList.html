@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments with Reply Feature</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        .reply-form {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="card">
+        <div class="card-body">
+            <table class="table">
+                <tbody id="comment-list">
+                <th:block th:each="comment : ${comments}">
+                    <tr>
+                        <td th:if="${comment.depth > 0}" th:each="i : ${#numbers.sequence(1, comment.depth)}">
+                            <span>&nbsp;</span>
+                        </td>
+                        <td>
+                            <span class="small" th:text="'↳'" th:if="${comment.depth != 0}"></span>
+                            <span class="small" th:text="${comment.name}">name</span>
+                        </td>
+                        <td>
+                            <span class="text-muted small" th:text="${comment.createdAt}">Date</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td th:if="${comment.depth > 0}" th:each="i : ${#numbers.sequence(1, comment.depth)}">
+                            <span>&nbsp;</span>
+                        </td>
+                        <td>
+                            <div th:text="${comment.content}">Comment</div>
+                        </td>
+                        <td>
+                            <button class="btn btn-sm btn-primary reply-button" th:if="${comment.depth < 99}"
+                                    th:data-comment-id="${comment.id}">Reply
+                            </button>
+                        </td>
+                    </tr>
+                    <!-- Reply form that will be toggled -->
+                    <tr class="reply-form" th:data-comment-id="${comment.id}">
+                        <td th:if="${comment.depth > 0}" th:each="i : ${#numbers.sequence(1, comment.depth)}">
+                            <span>&nbsp;</span>
+                        </td>
+                        <td colspan="3">
+                            <form class="reply-form-content">
+                                <div class="form-group">
+                                    <label th:for="'replyContent-' + ${comment.id}">Reply:</label>
+                                    <textarea th:id="'replyContent-' + ${comment.id}" class="form-control"
+                                              rows="3"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary"
+                                        th:onclick="|submitReplyForm(${comment.id})|">Submit
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                </th:block>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buttons = document.querySelectorAll('.reply-button');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function () {
+                const commentId = this.getAttribute('data-comment-id');
+                if (!commentId) {
+                    console.error('No data-comment-id found');
+                    return;
+                }
+
+                const replyForm = document.querySelector(`.reply-form[data-comment-id="${commentId}"]`);
+
+                if (!replyForm) {
+                    console.error('Reply form not found for ID:', commentId);
+                    return;
+                }
+
+                // Toggle the reply form visibility
+                if (replyForm.style.display === 'none' || replyForm.style.display === '') {
+                    replyForm.style.display = 'table-row';
+                } else {
+                    replyForm.style.display = 'none';
+                }
+            });
+        });
+    });
+
+    function submitReplyForm(commentId) {
+        const form = document.querySelector(`.reply-form-content`);
+        const textarea = document.getElementById(`replyContent-` + commentId);
+
+        if (textarea && form) {
+            const replyContent = textarea.value;
+
+            console.log('Reply Content:', replyContent);
+
+            let commentDTO = {
+                content: replyContent
+            }
+
+            console.log(commentDTO)
+
+            fetch('/replys/' + commentId, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + getCookie('ACCESS-TOKEN')
+                },
+                body: JSON.stringify(commentDTO),
+            })
+                .then(response => response.json())
+                .then((result) => {
+                    console.log(result)
+                    if (result.code !== 0) {
+                        alert(result.message);
+                        location.reload();
+                    }
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+
+        } else {
+            console.error('Textarea or form not found.');
+        }
+    }
+
+    function getCookie(name) {
+        let value = "; " + document.cookie;
+        let parts = value.split("; " + name + "=");
+        if (parts.length === 2) return parts.pop().split(";").shift();
+    }
+</script>
+</body>
+</html>
+

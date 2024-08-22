@@ -1,10 +1,7 @@
 package com.study.board.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Builder
 @AllArgsConstructor
@@ -12,14 +9,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table
 @Entity
+@Setter
 public class Comment extends TimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
     @Column(columnDefinition = "TEXT", nullable = false)
-    private String comment; // 댓글 내용
+    private String content; // 댓글 내용
 
     @ManyToOne
     @JoinColumn(name = "board_id")
@@ -30,11 +28,11 @@ public class Comment extends TimeEntity {
     private User user;
 
     @Column
-    private int ref;
+    private Long ref; // 최상위 부모 댓글 아이디
 
-    @Column
-    private int step;
+    @Column(nullable = false)
+    private Long step;
 
-    @Column
-    private int depth;
+    @Column(nullable = false)
+    private int depth; // 대댓글의 깊이
 }

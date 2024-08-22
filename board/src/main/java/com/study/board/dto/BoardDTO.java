@@ -1,11 +1,14 @@
 package com.study.board.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.study.board.entity.Board;
 import com.study.board.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 
 public class BoardDTO {
@@ -24,6 +27,7 @@ public class BoardDTO {
         private String content;
         private String createdAt, updatedAt;
         private User user;
+
 
         /* Dto -> Entity */
         public Board toEntity() {
@@ -46,7 +50,7 @@ public class BoardDTO {
         private String createdAt, updatedAt;
         private int userId;
         private String name;
-//        private List<CommentDTO.Response> comments;
+        private List<CommentDTO.Response> comments;
 
     }
 }

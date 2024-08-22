@@ -13,24 +13,77 @@
     <div class="col-md-12">
         <form class="card">
             <div class="card-header d-flex justify-content-between">
-                <label for="id" >번호 : </label>
-                <p id="id" th:text="${boardDTO.id}"/>
+                <label for="id">번호 : </label>
+                <p id="id" th:text="${boardDTO.id}"></p>
                 <label for="createdAt"></label>
-                <p id="createdAt" th:text="${boardDTO.createdAt}"/>
+                <p id="createdAt" th:text="${boardDTO.createdAt}"></p>
             </div>
             <div class="card-header d-flex justify-content-between">
                 <label for="name">작성자 : </label>
-                <p id="name" th:text="${boardDTO.name}"/>
+                <p id="name" th:text="${boardDTO.name}"></p>
             </div>
             <div class="card-body">
                 <label for="title">제목</label>
                 <h5 class="card-title" id="title" th:text="${boardDTO.title}"></h5>
                 <br/>
                 <label for="content">내용</label>
-                <p class="card-text" id="content" th:text="${boardDTO.content}">
+                <p class="card-text" id="content" th:text="${boardDTO.content}"></p>
             </div>
         </form>
     </div>
 </div>
+<!-- 댓글쓰기 구현 -->
+<div class="card mt-4" id="comment-form">
+    <div class="card-body">
+        <textarea class="form-control" id="comment-textarea"
+                  th:placeholder="${user == null ? '로그인 후 이용 가능합니다.' : 'Enter your comment here'}"
+                  th:disabled="${user == null}">
+        </textarea>
+        <input id="board_id" type="hidden" th:value="${boardDTO.id}">
+        <th:block th:unless="${user == null}">
+            <button class="btn btn-primary mt-2 float-right" id="submit-comment">
+                Submit Comment
+            </button>
+        </th:block>
+    </div>
+</div>
+<br/>
+<!-- 댓글 보이기 -->
+<div th:if="${commentList != null}" th:replace="~{comments/commentList}"></div>
 </body>
+<script>
+    document.querySelector("#submit-comment").addEventListener("click", () => {
+        const content = document.querySelector("#comment-textarea").value;
+        const boardId = document.querySelector("#board_id").value;
+
+        const commentDTO = {
+            content: content,
+            boardId: boardId
+        };
+
+        console.log(commentDTO);
+
+        fetch("/replys", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                'Authorization': 'Bearer ' + getCookie('ACCESS-TOKEN')
+            },
+            body: JSON.stringify(commentDTO)
+        })
+            .then(response => response.json())
+            .then((result) => {
+                if (result.code !== 0) {
+                    alert(result.message);
+                    return;
+                }
+                alert(result.message);
+                window.location.href = "/board/showOne/" + boardId;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    });
+
+</script>
 </html>

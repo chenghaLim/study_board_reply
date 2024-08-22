@@ -3,6 +3,7 @@ package com.study.board.controller;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.study.board.dto.BoardDTO;
+import com.study.board.dto.CommentDTO;
 import com.study.board.dto.UserDTO;
 import com.study.board.exception.BadRequestException;
 import com.study.board.security.auth.JwtProvider;
@@ -13,6 +14,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -20,6 +24,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.util.List;
 
 // 화면 보이는 Controller
 @Controller
@@ -60,9 +66,17 @@ public class HomeController {
         return "boards";
     }
 
+
+
     @GetMapping("/boards/showOne/{id}")
     public String showOne(@PathVariable int id, Model model, @CookieValue(name = "ACCESS-TOKEN", required = false) String token) {
-        model.addAttribute("boardDTO", boardService.findById(id));
+        BoardDTO.Response boardWithComments = boardService.getBoardWithComments(id);
+        List<CommentDTO.Response> comments = boardWithComments.getComments();
+
+        if(comments != null && !comments.isEmpty()){
+            model.addAttribute("comments",comments);
+        }
+        model.addAttribute("boardDTO", boardWithComments);
         getUser(token, model);
         return "boards/detail";
     }
@@ -80,9 +94,6 @@ public class HomeController {
         return "users/signIn";
     }
 
-    @GetMapping("/boards/new")
-    public String showWrite(){
-        return "boards/new";
-    }
+
 
 }

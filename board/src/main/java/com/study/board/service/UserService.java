@@ -1,11 +1,12 @@
 package com.study.board.service;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.study.board.dto.UserDTO;
 import com.study.board.entity.User;
 import com.study.board.exception.BadRequestException;
 import com.study.board.exception.ResDTO;
 import com.study.board.repository.UserRepository;
-import com.study.board.security.CustomUserDetails;
 import com.study.board.security.auth.JwtProvider;
 import com.study.board.security.auth.JwtToken;
 import com.study.board.security.auth.JwtTokenType;
@@ -19,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CookieValue;
 
 import java.util.Optional;
 
@@ -87,6 +89,7 @@ public class UserService {
                 HttpStatus.OK);
     }
 
+
     /* Entity -> dto */
     private UserDTO.Response convertToDto(User user) {
         UserDTO.Response userDTO = new UserDTO.Response();
@@ -96,5 +99,19 @@ public class UserService {
         userDTO.setRole(user.getRole());
 //        userDTO.setUpdatedAt(user.getUpdatedAt());
         return userDTO;
+    }
+
+    public User getUser(@CookieValue(name = "ACCESS-TOKEN", required = false) String token) {
+        if (token != null && !token.isEmpty()) {
+            try {
+                DecodedJWT jwt = jwtProvider.verify(token);
+                int userId = jwtProvider.getUserIdFromToken(jwt);
+                return userRepository.findById(userId)
+                        .orElseThrow(() -> new BadRequestException("User not found with ID: " + userId));
+            } catch (JWTVerificationException e) {
+                throw new BadRequestException("Invalid token: " + e.getMessage());
+            }
+        }
+        throw new BadRequestException("Token is required to get user information.");
     }
 }

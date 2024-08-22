@@ -1,5 +1,6 @@
 package com.study.board.dto;
 
+import com.querydsl.core.annotations.QueryProjection;
 import com.study.board.entity.Board;
 import com.study.board.entity.Comment;
 import com.study.board.entity.User;
@@ -10,19 +11,27 @@ public class CommentDTO {
     @AllArgsConstructor
     @NoArgsConstructor
     @Builder
+    @ToString
     public static class Request {
-        private int id;
-        private String comment;
+        private Long id;
+        private String content;
         private String createdAt, updatedAt;
         private User user;
         private Board board;
+        private Long ref;
+        private Long step;
+        private int depth;
+        private int boardId;
 
         public Comment toEntity() {
             Comment comments = Comment.builder()
                     .id(id)
-                    .comment(comment)
+                    .content(content)
                     .user(user)
                     .board(board)
+                    .ref(ref)
+                    .step(step)
+                    .depth(depth)
                     .build();
 
             return comments;
@@ -31,22 +40,18 @@ public class CommentDTO {
 
     @RequiredArgsConstructor
     @Getter
+    @Setter
+    @ToString
     public static class Response {
-        private int id;
-        private String comment;
-        private String createdAt, updateAt;
+        private Long id;
+        private String content;
+        private String createdAt, updatedAt;
         private String name;
         private int userId;
         private int boardId;
+        private Long ref;
+        private Long step;
+        private int depth;
 
-        public Response(Comment comment) {
-            this.id = comment.getId();
-            this.comment = comment.getComment();
-            this.createdAt = comment.getCreatedAt();
-            this.updateAt = comment.getUpdatedAt();
-            this.name = comment.getUser().getName();
-            this.userId = comment.getUser().getId();
-            this.boardId = comment.getBoard().getId();
-        }
     }
 }

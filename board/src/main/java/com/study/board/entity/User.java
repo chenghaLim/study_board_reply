@@ -33,4 +33,7 @@ public class User extends TimeEntity {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Board> boards;
 
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private List<Comment> comments;
+
 }

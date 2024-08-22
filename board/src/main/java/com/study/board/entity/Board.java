@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -27,9 +29,9 @@ public class Board extends TimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-
-//    @OneToMany(mappedBy = "boards",fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 //    @OrderBy("id asc")
-//    private List<Comment> comments;
+    @OneToMany(mappedBy = "board", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    private List<Comment> comments;
+
 }
 
